@@ -11,10 +11,10 @@ const MessageBubble = ({
   return (
     <div
       className={cn(
-        "w-fit px-5 py-3 rounded-xl bg-teal-200 ml-auto",
+        "w-fit max-w-96 px-5 py-3 rounded-xl bg-teal-600 ml-auto",
         className,
       )}>
-      <p>{message}</p>
+      <p className="break-words break-all">{message}</p>
     </div>
   );
 };

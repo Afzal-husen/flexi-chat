@@ -2,15 +2,16 @@
 
 import MessageBubble from "@/components/common/message-bubble";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { socketEvents } from "@/lib/socket-events";
+import { Message } from "@/types/chat-box";
 import { socket } from "@/utils/socket";
 import { SendHorizonal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const msgRef = useRef<HTMLDivElement>(null);
 
   const scrollBottom = () => {
@@ -35,19 +36,22 @@ const ChatBox = () => {
     e.preventDefault();
     if (message) {
       socket.emit(socketEvents.sendMessage, message);
-      setMessages((prev) => [...prev, message]);
+      setMessages((prev) => [...prev, { message }]);
       setMessage("");
     }
   };
   return (
     <div className="bg-primary-foreground flex-grow flex flex-col">
       <div className="h-full p-5 space-y-3 overflow-y-auto" ref={msgRef}>
-        {messages.map((m) => (
+        {messages.map((message) => (
           <>
-            {m.id ? (
-              <MessageBubble message={m.message} className="ml-0 bg-zinc-200" />
+            {message.id ? (
+              <MessageBubble
+                message={message.message}
+                className="ml-0 bg-zinc-200"
+              />
             ) : (
-              <MessageBubble message={m} />
+              <MessageBubble message={message.message} className="text-white" />
             )}
           </>
         ))}
@@ -55,12 +59,15 @@ const ChatBox = () => {
       <form
         className="bg-white py-3 px-5 flex items-center gap-x-5 border-t-[1px]"
         onSubmit={sendMessage}>
-        <Input
-          className="bg-zinc-100 border-none"
+        <Textarea
+          className="bg-zinc-100 border-none resize-none"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDownCapture={(e) =>
+            !e.shiftKey && e.key === "Enter" ? sendMessage(e) : ""
+          }
         />
-        <Button variant={"ghost"} className="p-2 w-fit h-fit">
+        <Button type="submit" variant={"ghost"} className="p-2 w-fit h-fit">
           <SendHorizonal className="size-5 text-teal-600" />
         </Button>
       </form>
