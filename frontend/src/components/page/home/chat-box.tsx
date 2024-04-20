@@ -6,17 +6,25 @@ import { Input } from "@/components/ui/input";
 import { socketEvents } from "@/lib/socket-events";
 import { socket } from "@/utils/socket";
 import { SendHorizonal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
+  const msgRef = useRef<HTMLDivElement>(null);
+
+  const scrollBottom = () => {
+    msgRef.current?.scrollTo({ top: msgRef.current.scrollHeight });
+  };
+
   useEffect(() => {
     socket.connect();
 
     socket.on(socketEvents.receiveMessage, (msg) => {
       setMessages([...messages, msg]);
     });
+    scrollBottom();
+
     return () => {
       socket.disconnect();
       socket.off(socketEvents.receiveMessage);
@@ -33,7 +41,7 @@ const ChatBox = () => {
   };
   return (
     <div className="bg-primary-foreground flex-grow flex flex-col">
-      <div className="h-full p-5 space-y-3 overflow-y-auto">
+      <div className="h-full p-5 space-y-3 overflow-y-auto" ref={msgRef}>
         {messages.map((m) => (
           <>
             {m.id ? (
