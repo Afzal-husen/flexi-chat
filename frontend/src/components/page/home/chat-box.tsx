@@ -1,40 +1,55 @@
 "use client";
 
+import MessageBubble from "@/components/common/message-bubble";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { socketEvents } from "@/lib/socket-events";
 import { socket } from "@/utils/socket";
 import { SendHorizonal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
-  console.log({ messages });
-
+  const [messages, setMessages] = useState<any[]>([]);
   useEffect(() => {
-    socket.on("chat message", (msg) => {
+    socket.connect();
+
+    socket.on(socketEvents.receiveMessage, (msg) => {
       setMessages([...messages, msg]);
     });
     return () => {
-      socket.off("chat message");
+      socket.disconnect();
+      socket.off(socketEvents.receiveMessage);
     };
-  }, [ messages]);
+  }, [messages]);
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message) {
-      socket.connect();
-      socket.emit("chat message", message);
+      socket.emit(socketEvents.sendMessage, message);
+      setMessages((prev) => [...prev, message]);
+      setMessage("");
     }
   };
   return (
     <div className="bg-primary-foreground flex-grow flex flex-col">
-      <div className="h-full">chat history</div>
+      <div className="h-full p-5 space-y-3 overflow-y-auto">
+        {messages.map((m) => (
+          <>
+            {m.id ? (
+              <MessageBubble message={m.message} className="ml-0 bg-zinc-200" />
+            ) : (
+              <MessageBubble message={m} />
+            )}
+          </>
+        ))}
+      </div>
       <form
         className="bg-white py-3 px-5 flex items-center gap-x-5 border-t-[1px]"
         onSubmit={sendMessage}>
         <Input
           className="bg-zinc-100 border-none"
+          value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
         <Button variant={"ghost"} className="p-2 w-fit h-fit">

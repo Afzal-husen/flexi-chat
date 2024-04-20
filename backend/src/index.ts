@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express, { Express } from "express";
 import { Server } from "socket.io";
 import http from "node:http";
+import { socketEvents } from "./lib/socket-events.js";
 
 dotenv.config();
 const app: Express = express();
@@ -17,9 +18,11 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(`socket ${socket.id} connected`);
-  socket.on("chat message", (message) => {
-    console.log(`${socket.id} has send ${message}`);
-    socket.broadcast.emit("chat message", message);
+  socket.on(socketEvents.sendMessage, (message) => {
+    socket.broadcast.emit(socketEvents.receiveMessage, {
+      id: socket.id,
+      message,
+    });
   });
 });
 
