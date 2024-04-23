@@ -1,9 +1,15 @@
-import React from 'react'
+import { signIn } from "@/lib/auth";
 
-const Page = () => {
+const SignIn = () => {
   return (
-    <div>Page</div>
-  )
-}
+    <form
+      action={async () => {
+        "use server";
+        await signIn("google");
+      }}>
+      <button type="submit">Signin with Google</button>
+    </form>
+  );
+};
 
-export default Page
+export default SignIn;

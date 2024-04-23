@@ -3,7 +3,6 @@ import express, { Express } from "express";
 import { Server } from "socket.io";
 import http from "node:http";
 import { socketEvents } from "./lib/socket-events.js";
-
 dotenv.config();
 const app: Express = express();
 

@@ -5,9 +5,10 @@
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "outDir": "dist/",
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "dist/"
+    "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["/src/*"]
+  "include": ["./src/**/*"]
 }
