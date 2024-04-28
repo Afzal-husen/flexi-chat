@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "../types/user.js";
 import { userCollection } from "../lib/db/collections/index.js";
 import bcrypt from "bcryptjs";
-import { BadRequestError } from "../lib/helpers/errors/bad-request-error.js";
+import { RequestError } from "../lib/helpers/errors/request-error.js";
+import { userSignUpSchema } from "../lib/utils/zod.js";
 
 export const createUser = async (
   req: Request,
@@ -10,22 +10,22 @@ export const createUser = async (
   next: NextFunction,
 ): Promise<Response<{ success: boolean; message: string }> | void> => {
   try {
-    const { username, email, password }: User = req.body;
+    const parsedBody = userSignUpSchema.safeParse(req.body);
 
-    if (!username || !email || !password)
-      return next(
-        new BadRequestError({
-          code: 400,
-          message: "All fields are required",
-          isLogging: true,
-        }),
-      );
+    if (!parsedBody.success) {
+      const message = parsedBody.error.errors.find(
+        (err) => err.message,
+      )?.message;
+      return next(new RequestError({ code: 400, message }));
+    }
+
+    const { email, password, username } = parsedBody.data;
 
     const userExist = await userCollection.findOne({ email, username });
 
     if (userExist)
       return next(
-        new BadRequestError({
+        new RequestError({
           code: 403,
           message: "Username or email is taken",
         }),
