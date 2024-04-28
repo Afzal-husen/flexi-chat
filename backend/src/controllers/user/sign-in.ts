@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { userSignInSchema } from "../../lib/utils/zod.js";
 import { RequestError } from "../../lib/helpers/errors/request-error.js";
-import { userCollection } from "../../lib/db/collections/index.js";
 import bcrypt from "bcryptjs";
+import { findOneUser } from "../../lib/db/queries/user.js";
 
 export const signIn = async (
   req: Request,
@@ -18,16 +18,20 @@ export const signIn = async (
       )?.message;
       return next(new RequestError({ code: 400, message }));
     }
+
     const { email, password } = parsedBody.data;
 
-    const user: unknown = await userCollection.findOne({ email });
-
+    const user = await findOneUser({ email });
     const parsedUser = userSignInSchema.safeParse(user);
 
-    if (!parsedUser.success) {
-      return next(new RequestError({ code: 404, message: "User not found" }));
+    if (!parsedUser.data && !parsedUser.success) {
+      return next(
+        new RequestError({
+          code: 404,
+          message: "Email is incorrect, please provide a valid email",
+        }),
+      );
     }
-
     const isPasswordCorrect = await bcrypt.compare(
       password,
       parsedUser.data.password,

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { userCollection } from "../../lib/db/collections/index.js";
 import bcrypt from "bcryptjs";
 import { RequestError } from "../../lib/helpers/errors/request-error.js";
 import { userSignUpSchema } from "../../lib/utils/zod.js";
+import { findOneUser, insertIntoUser } from "../../lib/db/queries/user.js";
 
 export const signUp = async (
   req: Request,
@@ -21,9 +21,9 @@ export const signUp = async (
 
     const { email, password, username } = parsedBody.data;
 
-    const userExist = await userCollection.findOne({ email, username });
+    const user = await findOneUser({ email, username });
 
-    if (userExist)
+    if (user.success)
       return next(
         new RequestError({
           code: 403,
@@ -32,12 +32,16 @@ export const signUp = async (
       );
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    await userCollection.insertOne({
+    const userCreated = await insertIntoUser({
       username,
       email,
       password: hashedPassword,
     });
+
+    if (!userCreated.success)
+      return next(
+        new RequestError({ code: 500, message: userCreated.message }),
+      );
 
     return res.status(200).json({
       success: true,
