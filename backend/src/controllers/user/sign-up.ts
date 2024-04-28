@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { userCollection } from "../lib/db/collections/index.js";
+import { userCollection } from "../../lib/db/collections/index.js";
 import bcrypt from "bcryptjs";
-import { RequestError } from "../lib/helpers/errors/request-error.js";
-import { userSignUpSchema } from "../lib/utils/zod.js";
+import { RequestError } from "../../lib/helpers/errors/request-error.js";
+import { userSignUpSchema } from "../../lib/utils/zod.js";
 
-export const createUser = async (
+export const signUp = async (
   req: Request,
   res: Response,
   next: NextFunction,
