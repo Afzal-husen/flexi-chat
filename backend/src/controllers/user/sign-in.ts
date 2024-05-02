@@ -22,20 +22,17 @@ export const signIn = async (
     const { email, password } = parsedBody.data;
 
     const user = await findOneUser({ email });
-    const parsedUser = userSignInSchema.safeParse(user);
 
-    if (!parsedUser.data && !parsedUser.success) {
+    if (!user) {
       return next(
         new RequestError({
           code: 404,
-          message: "Email is incorrect, please provide a valid email",
+          message: `User with email: ${email} does not exist`,
         }),
       );
     }
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      parsedUser.data.password,
-    );
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password!);
 
     if (!isPasswordCorrect)
       return next(

@@ -23,7 +23,7 @@ export const signUp = async (
 
     const user = await findOneUser({ email, username });
 
-    if (user.success)
+    if (user)
       return next(
         new RequestError({
           code: 403,

@@ -1,11 +1,13 @@
 import { userCollection } from "../collections/index.js";
 import { FilterQuery, User } from "../../../types/user.js";
 
-export const findOneUser = async (filterQuery: FilterQuery) => {
+export const findOneUser = async (
+  filterQuery: FilterQuery,
+): Promise<User | null> => {
   try {
     const user = (await userCollection.findOne({ ...filterQuery })) as User;
 
-    if (!user) return { success: false };
+    if (!user) return null;
 
     const { _id, email, username, password } = user;
 
@@ -14,8 +16,6 @@ export const findOneUser = async (filterQuery: FilterQuery) => {
       email,
       username,
       password,
-      success: true,
-      message: `User with email:${email} and username:${username} found`,
     };
   } catch (error: any) {
     return { error: true, message: error?.message || "Something went wrong" };
