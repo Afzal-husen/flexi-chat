@@ -1,6 +1,6 @@
 const baseUrl = process.env.SERVER_URL!;
 
-const serverUrls = {
+const serverRoutes = {
   signIn: `${baseUrl}/signin`,
 };
 
@@ -8,4 +8,4 @@ const clientRoutes = {
   signIn: "/login",
 };
 
-export { serverUrls, clientRoutes };
+export { serverRoutes, clientRoutes };

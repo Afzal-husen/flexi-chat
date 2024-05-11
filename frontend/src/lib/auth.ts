@@ -1,4 +1,4 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { signInSchema } from "./utils/zod/zod";

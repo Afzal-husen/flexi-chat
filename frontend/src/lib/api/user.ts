@@ -1,6 +1,4 @@
-import { NextApiRequest } from "next";
-import { NextResponse } from "next/server";
-import { serverUrls } from "../utils/constant";
+import { serverRoutes } from "../utils/constant";
 
 export const userSignIn = async ({
   email,
@@ -9,7 +7,7 @@ export const userSignIn = async ({
   email: string;
   password: string;
 }) => {
-  const response = await fetch(serverUrls.signIn, {
+  const response = await fetch(serverRoutes.signIn, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

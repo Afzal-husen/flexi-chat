@@ -1,6 +1,7 @@
 import { signIn } from "@/lib/auth";
+import React from "react";
 
-const SignIn = () => {
+const GoogleSignup = () => {
   return (
     <form
       action={async () => {
@@ -12,4 +13,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default GoogleSignup;

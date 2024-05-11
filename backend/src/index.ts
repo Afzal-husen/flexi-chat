@@ -22,15 +22,15 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log(`socket ${socket.id} connected`);
-  socket.on(socketEvents.sendMessage, (message) => {
-    socket.broadcast.emit(socketEvents.receiveMessage, {
-      id: socket.id,
-      message,
-    });
-  });
-});
+// io.on("connection", (socket) => {
+//   console.log(`socket ${socket.id} connected`);
+//   socket.on(socketEvents.sendMessage, (message) => {
+//     socket.broadcast.emit(socketEvents.receiveMessage, {
+//       id: socket.id,
+//       message,
+//     });
+//   });
+// });
 
 const start = async () => {
   try {
