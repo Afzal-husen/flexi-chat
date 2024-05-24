@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { signInSchema } from "./utils/zod/zod";
+import { signInSchema } from "./zod/zod";
 import { userSignIn } from "./api/user";
 import { ZodError } from "zod";
 import { clientRoutes } from "./utils/constant";

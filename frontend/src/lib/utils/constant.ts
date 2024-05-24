@@ -6,6 +6,7 @@ const serverRoutes = {
 
 const clientRoutes = {
   signIn: "/login",
+  signUp: "/signup",
 };
 
 export { serverRoutes, clientRoutes };

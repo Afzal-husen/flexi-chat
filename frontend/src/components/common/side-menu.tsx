@@ -14,24 +14,18 @@ const SideMenu = () => {
     <div className="bg-primary-foreground flex-initial ">
       <ul className="p-2">
         <MenuIcon
-          icon={
-            <Globe className="size-5 text-teal-600 group-hover:text-white" />
-          }
+          icon={<Globe className="size-5 text-main group-hover:text-white" />}
         />
         <MenuIcon
           icon={
-            <MessageCircle className="size-5 text-teal-600 group-hover:text-white" />
+            <MessageCircle className="size-5 text-main group-hover:text-white" />
           }
         />
         <MenuIcon
-          icon={
-            <Video className="size-5 text-teal-600 group-hover:text-white" />
-          }
+          icon={<Video className="size-5 text-main group-hover:text-white" />}
         />
         <MenuIcon
-          icon={
-            <Music className="size-5 text-teal-600 group-hover:text-white" />
-          }
+          icon={<Music className="size-5 text-main group-hover:text-white" />}
         />
         <MenuIcon
           className="hover:bg-white"

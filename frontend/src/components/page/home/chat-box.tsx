@@ -4,7 +4,7 @@ import MessageBubble from "@/components/common/message-bubble";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { socketEvents } from "@/lib/socket-events";
-import { Message } from "@/types/chat-box";
+import { Message } from "@/lib/types/chat-box";
 import { socket } from "@/lib/utils/socket";
 import { SendHorizonal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";

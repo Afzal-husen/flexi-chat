@@ -35,7 +35,7 @@ const FormInput = ({
             <FormControl>
               <Input placeholder={placeholder} type={type} {...field} />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </FormItem>
         );
       }}
