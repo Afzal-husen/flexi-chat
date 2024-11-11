@@ -13,7 +13,7 @@ const ButtonLink = ({ href, content }: ButtonLinkProps) => {
       href={href}
       className={`${buttonVariants({
         variant: "ghost",
-      })} absolute top-5 right-5 bg-accent hover:bg-main hover:text-accent transition-all ease-linear`}>
+      })} absolute top-5 right-5 bg-accent hover:bg-main hover:text-white transition-all ease-linear`}>
       {content}
     </Link>
   );

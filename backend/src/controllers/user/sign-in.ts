@@ -3,6 +3,7 @@ import { userSignInSchema } from "../../lib/utils/zod.js";
 import { RequestError } from "../../lib/helpers/errors/request-error.js";
 import bcrypt from "bcryptjs";
 import { findOneUser } from "../../lib/db/queries/user.js";
+import jwt from "jsonwebtoken";
 
 export const signIn = async (
   req: Request,
@@ -39,10 +40,17 @@ export const signIn = async (
         new RequestError({ code: 401, message: "Password is incorrect" }),
       );
 
-    return res.status(200).json({
-      success: true,
-      message: "User login successfull",
+    const token = jwt.sign({ userId: user._id }, process.env.SESSION_SECRET, {
+      expiresIn: "1d",
     });
+
+    return res
+      .cookie("session-token", token, { maxAge: 1000 * 60 * 60 * 24 })
+      .status(200)
+      .json({
+        success: true,
+        message: "User login successfull",
+      });
   } catch (error) {
     next(error);
   }

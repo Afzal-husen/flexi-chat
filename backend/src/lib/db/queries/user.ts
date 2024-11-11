@@ -29,6 +29,7 @@ export const insertIntoUser = async (userData: User) => {
       return {
         success: false,
         message: "An Error occured while creating user ",
+        user: { _id: user.insertedId },
       };
     return { success: true };
   } catch (error: any) {

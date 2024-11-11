@@ -6,31 +6,34 @@ import { socketEvents } from "./lib/helpers/socket-events.js";
 import { connectDb } from "./lib/db/connect-db.js";
 import userRouter from "./routes/user.js";
 import { errorHandler } from "./middleware/error-handler.js";
+import cookieParser from "cookie-parser";
+
 dotenv.config();
 const app: Express = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/v1", userRouter);
 app.use(errorHandler);
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log(`socket ${socket.id} connected`);
-//   socket.on(socketEvents.sendMessage, (message) => {
-//     socket.broadcast.emit(socketEvents.receiveMessage, {
-//       id: socket.id,
-//       message,
-//     });
-//   });
-// });
+io.on("connection", (socket) => {
+  console.log(`socket ${socket.id} connected`);
+  socket.on(socketEvents.sendMessage, (message) => {
+    socket.broadcast.emit(socketEvents.receiveMessage, {
+      id: socket.id,
+      message,
+    });
+  });
+});
 
 const start = async () => {
   try {
