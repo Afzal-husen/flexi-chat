@@ -1,5 +1,9 @@
-import socketIo from "socket.io-client";
+import socketIo, { ManagerOptions, SocketOptions } from "socket.io-client";
 
 const URL = process.env.NEXT_PUBLIC_SERVER_URL!;
 
-export const socket = socketIo(URL, { autoConnect: false });
+const socket = (options?: Partial<ManagerOptions & SocketOptions>) => {
+  return socketIo(URL, options);
+};
+
+export { socket };

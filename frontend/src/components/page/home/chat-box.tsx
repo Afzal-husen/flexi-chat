@@ -7,35 +7,42 @@ import { socketEvents } from "@/lib/socket-events";
 import { Message } from "@/lib/types/chat-box";
 import { socket } from "@/lib/utils/socket";
 import { SendHorizonal } from "lucide-react";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useEffect, useRef, useState } from "react";
 
-const ChatBox = () => {
+type TChatBox = {
+  token: RequestCookie | undefined;
+};
+
+const ChatBox = ({ token }: TChatBox) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const msgRef = useRef<HTMLDivElement>(null);
+  const socketIo = socket({ autoConnect: false, auth: { token } });
 
   const scrollBottom = () => {
     msgRef.current?.scrollTo({ top: msgRef.current.scrollHeight });
   };
 
   useEffect(() => {
-    socket.connect();
+    socketIo.connect();
 
-    socket.on(socketEvents.receiveMessage, (msg) => {
+    socketIo.on(socketEvents.receiveMessage, (msg) => {
       setMessages([...messages, msg]);
     });
+
     scrollBottom();
 
     return () => {
-      socket.disconnect();
-      socket.off(socketEvents.receiveMessage);
+      socketIo.disconnect();
+      socketIo.off(socketEvents.receiveMessage);
     };
   }, [messages]);
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message) {
-      socket.emit(socketEvents.sendMessage, message);
+      socketIo.emit(socketEvents.sendMessage, message);
       setMessages((prev) => [...prev, { message }]);
       setMessage("");
     }

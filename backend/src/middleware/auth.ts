@@ -1,22 +1,22 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { Socket } from "socket.io";
+import { RequestError } from "../lib/helpers/errors/request-error.js";
 
-const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const token = req.cookies["session-token"];
+const authenticateSocket = () => (socket: Socket, next: NextFunction) => {
+  const token = socket.handshake.auth.token;
+  console.log(token);
 
-    console.log({ token });
+  if (!token)
+    return next(new RequestError({ code: 404, message: "Not authorized" }));
 
-    const decodedToken = jwt.verify(token, process.env.SESSION_SECRET);
+  const decoded = jwt.verify(token, process.env.SESSION_SECRET);
 
-    const { userId } = decodedToken as { userId: string };
+  const { userId } = decoded as { userId: string };
 
-    req.body.userId = userId;
+  socket.data.userId = userId;
 
-    next();
-  } catch (error) {
-    next(error);
-  }
+  next();
 };
 
-export { authenticate };
+export { authenticateSocket };
