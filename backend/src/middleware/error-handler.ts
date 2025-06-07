@@ -1,12 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { ErrorRequestHandler } from "express";
 import { CustomError } from "../lib/helpers/errors/custom-error.js";
 
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Response<any> => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = 500;
   let message = err.message || "Something went wrong";
   if (err instanceof CustomError) {
@@ -14,7 +9,7 @@ export const errorHandler = (
     message = err.message;
   }
 
-  return res.status(statusCode).json({
+  res.status(statusCode).json({
     success: false,
     message,
     statusCode,

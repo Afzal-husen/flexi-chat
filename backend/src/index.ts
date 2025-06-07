@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-import express, { Express } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import { Server } from "socket.io";
 import http from "node:http";
 import { socketEvents } from "./lib/helpers/socket-events.js";
@@ -10,24 +9,26 @@ import cookieParser from "cookie-parser";
 import { authenticateSocket } from "./middleware/auth.js";
 import { FRONTEND_URL, PORT } from "./lib/config/env.js";
 
-dotenv.config();
 const app: Express = express();
 
 app.use(express.json());
-app.use(cookieParser());
-app.use("/api/v1", userRouter);
-app.use(errorHandler);
+// app.use(cookieParser());
+// app.use("/api/v1", userRouter);
+// app.use(errorHandler);
 
 const server = http.createServer(app);
 
-export const io = new Server(server, {
-  cors: {
-    origin: FRONTEND_URL,
-    methods: ["GET", "POST"],
-  },
-});
+export const io = new Server(server);
 
-// io.use(authenticateSocket);
+io.use(authenticateSocket);
+
+app.get(
+  "/",
+  authenticateSocket(),
+  (req: Request, res: Response, next: NextFunction) => {
+    res.send("Hello");
+  },
+);
 
 io.on("connection", (socket) => {
   console.log(`socket ${socket.id} connected`);
