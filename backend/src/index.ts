@@ -22,13 +22,9 @@ export const io = new Server(server);
 
 io.use(authenticateSocket);
 
-app.get(
-  "/",
-  authenticateSocket(),
-  (req: Request, res: Response, next: NextFunction) => {
-    res.send("Hello");
-  },
-);
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.send("Hello");
+});
 
 io.on("connection", (socket) => {
   console.log(`socket ${socket.id} connected`);
